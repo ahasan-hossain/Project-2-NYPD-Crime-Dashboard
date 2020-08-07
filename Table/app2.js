@@ -25,10 +25,6 @@ $.ajax({
                 event.preventDefault();
                 buildTable();
             });
-            $("#clear").on('click', function(event) {
-                event.preventDefault();
-                clearEntries()
-            });
         });
 
         // Create dynamic Filters
@@ -67,6 +63,20 @@ $.ajax({
 
         // Build Table
         function buildTable() {
+
+            data.forEach(function(d) {
+                if (d.vic_sex === "M") {
+                    d.vic_sex = "MALE";
+                } else {
+                    d.vic_sex = "FEMALE";
+                }
+                if (d.statistical_murder_flag === true) {
+                    d.statistical_murder_flag = "YES";
+                } else {
+                    d.statistical_murder_flag = "NO";
+                }
+                d.occur_date = d.occur_date.split('T')[0];
+            })
 
             // Filters
             var dateInput = $('#date').val();
