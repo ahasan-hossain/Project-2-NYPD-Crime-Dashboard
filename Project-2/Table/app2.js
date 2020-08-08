@@ -1,38 +1,36 @@
-$(document).ready(function() {
+$.ajax({
+    type: "GET",
+    url: "https://data.cityofnewyork.us/resource/833y-fsy8.json?$select=incident_key,occur_date,boro,statistical_murder_flag,vic_age_group,vic_race,vic_sex",
+    dataType: 'json',
+    success: function(data) {
+        console.log(data)
 
-    boroFilter();
-    raceFilter();
-    genderFilter();
-    buildTable();
+        $(document).ready(function() {
 
-    //Event Listeners
-    $('#filter-btn').on("click", function(event) {
-        event.preventDefault();
-        buildTable();
-    });
-    $('#form').on("submit", function(event) {
-        event.preventDefault();
-        buildTable();
-    });
-    $('#boro, #gender, #race').on("change", function(event) {
-        event.preventDefault();
-        buildTable();
-    });
-});
+            boroFilter();
+            raceFilter();
+            genderFilter();
+            buildTable();
 
-// Create dynamic Filters
-function boroFilter() {
-    $.ajax({
-        type: "GET",
-        url: "https://data.cityofnewyork.us/resource/833y-fsy8.json",
-        dataType: 'json', // added data type
-        success: function(data) {
-            //console.log(data);
+            //Event Listeners
+            $('#filter-btn').on("click", function(event) {
+                event.preventDefault();
+                buildTable();
+            });
+            $('#form').on("submit", function(event) {
+                event.preventDefault();
+                buildTable();
+            });
+            $('#boro, #gender, #race').on("change", function(event) {
+                event.preventDefault();
+                buildTable();
+            });
+        });
 
-            //global
-            var tableData = data;
+        // Create dynamic Filters
+        function boroFilter() {
 
-            var boros = [...new Set(tableData.map(x => x.boro))];
+            var boros = [...new Set(data.map(x => x.boro))];
             boros.sort();
 
             boros.forEach(function(boro) {
@@ -40,21 +38,10 @@ function boroFilter() {
                 $('#boro').append(idunno);
             });
         }
-    });
-}
 
-function raceFilter() {
-    $.ajax({
-        type: "GET",
-        url: "https://data.cityofnewyork.us/resource/833y-fsy8.json",
-        dataType: 'json', // added data type
-        success: function(data) {
-            //console.log(data);
+        function raceFilter() {
 
-            //global
-            var tableData = data;
-
-            var races = [...new Set(tableData.map(x => x.vic_race))];
+            var races = [...new Set(data.map(x => x.vic_race))];
             races.sort();
 
             races.forEach(function(race) {
@@ -62,20 +49,18 @@ function raceFilter() {
                 $('#race').append(idunno);
             });
         }
-    });
-}
 
-function genderFilter() {
-    $.ajax({
-        type: "GET",
-        url: "https://data.cityofnewyork.us/resource/833y-fsy8.json",
-        dataType: 'json', // added data type
-        success: function(data) {
-            //console.log(data);
+        function genderFilter() {
 
-            //global
-            var tableData = data;
-            var genders = [...new Set(tableData.map(x => x.vic_sex))];
+            data.forEach(function(d) {
+                if (d.vic_sex === "M") {
+                    d.vic_sex = "MALE";
+                } else {
+                    d.vic_sex = "FEMALE";
+                }
+            })
+
+            var genders = [...new Set(data.map(x => x.vic_sex))];
             genders.sort();
 
             genders.forEach(function(gender) {
@@ -83,20 +68,23 @@ function genderFilter() {
                 $('#gender').append(idunno);
             });
         }
-    });
-}
 
-// Build Table
-function buildTable() {
-    $.ajax({
-        type: "GET",
-        url: "https://data.cityofnewyork.us/resource/833y-fsy8.json",
-        dataType: 'json', // added data type
-        success: function(data) {
-            console.log(data);
+        // Build Table
+        function buildTable() {
 
-            //global
-            var tableData = data;
+            data.forEach(function(d) {
+                if (d.vic_sex === "M") {
+                    d.vic_sex === "MALE";
+                } else {
+                    d.vic_sex === "FEMALE";
+                }
+                if (d.statistical_murder_flag === true) {
+                    d.statistical_murder_flag = "YES";
+                } else {
+                    d.statistical_murder_flag = "NO";
+                }
+                d.occur_date = d.occur_date.split('T')[0];
+            })
 
             // Filters
             var dateInput = $('#date').val();
@@ -105,10 +93,10 @@ function buildTable() {
             var raceInput = $('#race').val();
 
             // Filter Data
-            var sub_data = tableData;
+            var sub_data = data;
 
             if (dateInput !== "") {
-                sub_data = tableData.filter(x => Date.parse(x.occur_date.split(`T`)[0]) === Date.parse(dateInput));
+                sub_data = data.filter(x => Date.parse(x.occur_date.split(`T`)[0]) === Date.parse(dateInput));
             }
             if (boroInput != "All") {
                 sub_data = sub_data.filter(x => x.boro === boroInput);
@@ -120,7 +108,7 @@ function buildTable() {
                 sub_data = sub_data.filter(x => x.vic_race === raceInput);
             }
 
-            $('#shootings-table').DataTable().clear().destroy(); //clear datatable
+            $('#shootings-table').DataTable().clear().destroy();
             $('#shootings-table tbody').empty();
             sub_data.forEach(function(thing) {
                 let row = "<tr>"
@@ -139,5 +127,5 @@ function buildTable() {
                 ]
             })
         }
-    });
-}
+    }
+})
