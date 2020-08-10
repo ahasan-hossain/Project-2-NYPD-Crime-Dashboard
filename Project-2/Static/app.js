@@ -93,7 +93,7 @@ function makeMap() {
                     } else {
                         d.vic_sex = "FEMALE";
                     }
-                    if (response.statistical_murder_flag === true) {
+                    if (d.statistical_murder_flag === true) {
                         d.statistical_murder_flag = "YES";
                     } else {
                         d.statistical_murder_flag = "NO";
@@ -109,7 +109,7 @@ function makeMap() {
                 var heatArray = [];
 
                 response.forEach(function(murder) {
-                            if (murder.statistical_murder_flag === true) {
+                            if (murder.statistical_murder_flag === "YES") {
                                 let yes = L.marker([+murder.latitude, +murder.longitude], {
                                         icon: icons.deaths,
                                     }).bindPopup(`<h5>${murder.location_desc}</h5><p>Borough: ${murder.boro}</p><p>Date: ${murder.occur_date.split(`T`)[0]}</p><p>Victim Race: ${murder.vic_race}</p><p>Victim Sex: ${murder.vic_sex}</p><p>Deaths: ${murder.statistical_murder_flag}</p>`);
@@ -142,13 +142,13 @@ function makeMap() {
             if (gender.vic_sex === "MALE") {
                 let male = L.marker([+gender.latitude, +gender.longitude], {
                     icon: icons.maleIcon,
-                }).bindPopup(`<h5>${gender.location_desc}</h5><hr><h5>Borough: ${gender.boro}</h5><br><h5>Date: ${gender.occur_date.split(`T`)[0]}</h5><br><h5>Victim Race: ${gender.vic_race}</h5><br><h5>Victim Sex: ${gender.vic_sex}</h5><br><h5>Deaths: ${gender.statistical_murder_flag}</h5>`);
+                }).bindPopup(`<h5>${gender.location_desc}</h5><p><h5>Borough: ${gender.boro}</p><p>Date: ${gender.occur_date.split(`T`)[0]}</p><p>Victim Race: ${gender.vic_race}</p><p>Victim Sex: ${gender.vic_sex}</p><p>Deaths: ${gender.statistical_murder_flag}</h5>`);
                 genderM.addLayer(male);
                 heatArray.push([+gender.latitude, +gender.longitude]);
             } else {
                 let female = L.marker([+gender.latitude, +gender.longitude], {
                     icon: icons.femaleIcon,
-                }).bindPopup(`<h5>${gender.location_desc}</h5><hr><h5>Borough: ${gender.boro}</h5><br><h5>Date: ${gender.occur_date.split(`T`)[0]}</h5><br><h5>Victim Race: ${gender.vic_race}</h5><br><h5>Victim Sex: ${gender.vic_sex}</h5><br><h5>Deaths: ${gender.statistical_murder_flag}</h5>`);
+                }).bindPopup(`<h5>${gender.location_desc}</h5><p><h5>Borough: ${gender.boro}</p><p>Date: ${gender.occur_date.split(`T`)[0]}</p><p>Victim Race: ${gender.vic_race}</p><p>Victim Sex: ${gender.vic_sex}</p><p>Deaths: ${gender.statistical_murder_flag}</h5>`);
                 genderF.addLayer(female);
                 heatArray.push([+gender.latitude, +gender.longitude]);
             }

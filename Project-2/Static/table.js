@@ -71,9 +71,9 @@ $.ajax({
                     d.vic_sex = "FEMALE";
                 }
                 if (d.statistical_murder_flag === true) {
-                    d.statistical_murder_flag = "YES";
+                    d.statistical_murder_flag === "YES";
                 } else {
-                    d.statistical_murder_flag = "NO";
+                    d.statistical_murder_flag === "NO";
                 }
                 d.occur_date = d.occur_date.split('T')[0];
             })
